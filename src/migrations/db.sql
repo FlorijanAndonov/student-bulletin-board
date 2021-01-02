@@ -38,3 +38,5 @@ alter table students
     add constraint students_school_boards_id_fk
         foreign key (`board_id`) references school_boards (`id`);
 
+alter table school_boards
+    add discard_lowest bool default false null;
