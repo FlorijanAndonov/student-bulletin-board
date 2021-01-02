@@ -1,0 +1,8 @@
+{
+  "autoload": {
+    "psr-4": {
+      "Domain\\": "src/Domain",
+      "Utility\\": "src/Utility"
+    }
+  }
+}
