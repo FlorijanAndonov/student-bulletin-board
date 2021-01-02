@@ -7,7 +7,6 @@ use PDOException;
 
 class DB extends PDO
 {
-    private $connection;
 
     private string $user = 'root';
     private string $pasword = 'Root123!@#';
@@ -32,12 +31,12 @@ class DB extends PDO
         }
     }
 
-    public function read($sql, $arguments)
+    public function write(string $sql, ?array $arguments = null)
     {
         try {
             $data = [];
             if (is_null($arguments)) {
-                $this->query($sql);
+                $this->exec($sql);
                 $data['success'] = true;
                 $data['insert_id'] = $this->lastInsertId();
             } else {
@@ -58,7 +57,6 @@ class DB extends PDO
                     $data['success'] = true;
                     $data['insert_id'] = $this->lastInsertId();
                 }
-
             }
 
             return $data;
@@ -67,5 +65,29 @@ class DB extends PDO
         }
     }
 
+    public function read(string $sql, ?array $arguments = null)
+    {
+        $data = null;
+        try {
 
+            if (is_null($arguments)) {
+                $stmt = $this->query($sql);
+                $data['list'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data['total'] = $stmt->rowCount();
+                $data['success'] = true;
+            } else {
+                $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+                $stmt = $this->prepare($sql);
+                $stmt->execute($arguments);
+                $data['success'] = true;
+                $data['total'] = $stmt->rowCount();
+                $data['list'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            return $data;
+        } catch (PDOException $exception) {
+            return 'PDOError: ' . $sql . ' ' . $exception->getCode() . " Query Message: " . $exception->getMessage();
+        }
+    }
 }
