@@ -19,6 +19,7 @@ class Board
     const NAME = 'name';
     const PASSING_AVERAGE = 'passing_average';
     const RETURN_FORMAT = 'return_format';
+    const DISCARD_LOWEST = 'discard_lowest';
 
     private DB $db;
 
