@@ -40,3 +40,7 @@ alter table students
 
 alter table school_boards
     add discard_lowest bool default false null;
+
+alter table school_boards
+    add minimum_grades int default 0 null;
+
