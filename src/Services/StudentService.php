@@ -28,6 +28,15 @@ class StudentService
     private function evaluateStudentPassed(Student $student):bool
     {
         $gradeService = new GradeService();
+        if ($student->board->discard_lowest){
+            array_shift($student->grades);
+        }
         $gradeAverage = $gradeService->getAverageOfGrades(array_column($student->grades,'value'));
+        if ($student->board->minimum_grades > 0){
+            $enoughGrades = count($student->grades) > $student->board->minimum_grades;
+        } else {
+            $enoughGrades = true;
+        }
+        return $gradeAverage > $student->board->passing_average && $enoughGrades;
     }
 }

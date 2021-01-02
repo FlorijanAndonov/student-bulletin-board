@@ -6,13 +6,19 @@ error_reporting(E_ALL);
 require_once(__DIR__ . "/vendor/autoload.php");
 
 use Services\StudentService;
+use Utility\OutputBuilder;
 
-echo "<pre>";
 $studentService = new StudentService();
 $studentId = $_GET['student'];
 
 if(filter_var($studentId,FILTER_VALIDATE_INT)){
-    print_r($studentService->getStudent($studentId));
+    $studentData = $studentService->getStudent($studentId);
+    if ($studentData['success'] === false){
+        echo $studentData['message'];
+        die();
+    }
+
+    $output = new OutputBuilder($studentData['student']);
 } else {
     echo "invalid student id";
 }

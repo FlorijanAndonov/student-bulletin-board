@@ -15,6 +15,7 @@ use Utility\Exceptions\Board\BoardException;
  * @property string $return_format
  * @property boolean $discard_lowest
  * @property boolean $populateModel
+ * @property int $minimum_grades
  */
 class Board implements ModelInterface
 {
@@ -75,6 +76,7 @@ class Board implements ModelInterface
             $this->passing_average = (int)$board['passing_average'];
             $this->return_format = (string)$board['return_format'];
             $this->discard_lowest = (boolean)$board['discard_lowest'];
+            $this->minimum_grades = (boolean)$board['minimum_grades'];
         }
 
         return $this;
