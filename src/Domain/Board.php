@@ -3,7 +3,7 @@
 namespace Domain;
 
 use Utility\DB;
-use Utility\Exceptions\Student\BoardException;
+use Utility\Exceptions\Board\BoardException;
 
 /**
  * Class Board
@@ -14,7 +14,7 @@ use Utility\Exceptions\Student\BoardException;
  * @property string $passing_average
  * @property string $return_format
  * @property boolean $discard_lowest
- * @property boolean $populate_model
+ * @property boolean $populateModel
  */
 class Board implements ModelInterface
 {
@@ -23,15 +23,18 @@ class Board implements ModelInterface
     const PASSING_AVERAGE = 'passing_average';
     const RETURN_FORMAT = 'return_format';
     const DISCARD_LOWEST = 'discard_lowest';
+    const MINIMUM_GRADES = 'minimum_grades';
 
     private DB $db;
     private $id;
-    private $populate_model = false;
+    private $populateModel = false;
 
     public function __construct()
     {
         $this->db = new DB();
     }
+
+
 
     /**
      * @return array|Board
@@ -42,24 +45,30 @@ class Board implements ModelInterface
         if (empty($this->id)) {
             throw new BoardException('Invalid Board Id', 10001);
         }
-        $sql = "SELECT `name`,`board_id` FROM `students` WHERE id = :studentId";
+        $sql = "SELECT `name`,`passing_average`,`return_format`,`discard_lowest`,`minimum_grades` FROM `school_boards` WHERE id = :boardId";
         $arguments = [
-            'studentId' => $this->id
+            'boardId' => $this->id
         ];
 
         if ($this->populateModel) {
-            $this->populateModel($this->db->read($sql, $arguments));
+            return $this->populateModel($this->db->read($sql, $arguments));
         }
 
         return $this->db->read($sql, $arguments);
     }
 
+    /**
+     * @param array|null $data
+     * @return Board
+     */
     public function populateModel(?array $data): Board
     {
+
         if (is_null($data)) {
             $this->populateModel = true;
             return $this;
         }
+
 
         foreach ($data['list'] as $board) {
             $this->name = (string)$board['name'];
@@ -69,5 +78,13 @@ class Board implements ModelInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }

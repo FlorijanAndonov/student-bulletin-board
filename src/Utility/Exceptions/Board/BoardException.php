@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Utility\Exceptions\Student;
+namespace Utility\Exceptions\Board;
 
 use Throwable;
 

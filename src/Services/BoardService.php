@@ -3,7 +3,7 @@
 namespace Services;
 
 use Domain\Board;
-use Utility\Exceptions\Student\BoardException;
+use Utility\Exceptions\Board\BoardException;
 
 /**
  * Class BoardService
@@ -23,6 +23,7 @@ class BoardService
     public function getBoard(int $id): Board
     {
         try {
+            $this->board->setId($id);
             return $this->board->populateModel(null)->getById($id);
         } catch (BoardException $exception) {
             die("error ".$exception->getMessage());

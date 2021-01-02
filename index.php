@@ -7,9 +7,10 @@ require_once(__DIR__ . "/vendor/autoload.php");
 
 use Services\StudentService;
 
-echo "<pre";
+echo "<pre>";
 $studentService = new StudentService();
 $studentId = $_GET['student'];
+
 if(filter_var($studentId,FILTER_VALIDATE_INT)){
     print_r($studentService->getStudent($studentId));
 } else {

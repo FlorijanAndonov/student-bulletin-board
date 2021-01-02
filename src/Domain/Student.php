@@ -4,6 +4,7 @@
 namespace Domain;
 
 use Services\BoardService;
+use Services\GradeService;
 use Utility\DB;
 use Utility\Exceptions\Student\StudentException;
 
@@ -15,6 +16,9 @@ use Utility\Exceptions\Student\StudentException;
  * @property string $name;
  * @property int $board_id;
  * @property bool $populateModel;
+ * @property bool $passed;
+ * @property Board $board;
+ * @property array $grades;
  */
 class Student implements ModelInterface
 {
@@ -26,12 +30,14 @@ class Student implements ModelInterface
     private $db;
     private $populateModel = false;
 
-    private $name;
-    private $board_id;
+    public $name;
+    public $board_id;
+    public $grades = [];
+    public bool $passed;
 
     public function __construct()
     {
-        $this->db = new DB;
+        $this->db = new DB();
     }
 
     public function getBoardRelation(int $id): Board
@@ -41,7 +47,7 @@ class Student implements ModelInterface
     }
 
     /**
-     * @return array|string
+     * @return array|Student
      * @throws StudentException
      */
     public function getById()
@@ -55,16 +61,21 @@ class Student implements ModelInterface
         ];
 
         if ($this->populateModel) {
-            $this->populateModel($this->db->read($sql, $arguments));
+            return $this->populateModel($this->db->read($sql, $arguments));
         }
 
         return $this->db->read($sql, $arguments);
     }
 
+    public function setPassedFlag(bool $flag): void
+    {
+        $this->passed = $flag;
+    }
+
     /**
      * @param mixed $id
      */
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -79,14 +90,20 @@ class Student implements ModelInterface
             $this->populateModel = true;
             return $this;
         }
-
         foreach ($data['list'] as $student) {
             $this->name = $student['name'];
             $this->board_id = $student['board_id'];
         }
 
         $this->board = $this->getBoardRelation($this->board_id);
+        $this->grades = $this->getGrades();
 
         return $this;
+    }
+
+    private function getGrades()
+    {
+        $gradeService = new GradeService();
+        return $gradeService->getStudentGrades($this->id);
     }
 }
