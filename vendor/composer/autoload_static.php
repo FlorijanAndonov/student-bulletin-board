@@ -11,6 +11,10 @@ class ComposerStaticInitd01cac585f1ad3817d8a97fadff8719a
         array (
             'Utility\\' => 8,
         ),
+        'S' => 
+        array (
+            'Services\\' => 9,
+        ),
         'D' => 
         array (
             'Domain\\' => 7,
@@ -21,6 +25,10 @@ class ComposerStaticInitd01cac585f1ad3817d8a97fadff8719a
         'Utility\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Utility',
+        ),
+        'Services\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Services',
         ),
         'Domain\\' => 
         array (
